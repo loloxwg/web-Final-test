@@ -21,4 +21,5 @@ func main() {
 //路由设置
 func registerRouter(router *gin.Engine)  {
 	new(controller.HelloController).Router(router)
+	new(controller.MemberController).Router(router)
 }
