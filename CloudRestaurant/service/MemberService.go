@@ -3,6 +3,7 @@ package service
 import (
 	"CloudRestaurant/dao"
 	"CloudRestaurant/model"
+	"CloudRestaurant/param"
 	"CloudRestaurant/tool"
 	"encoding/json"
 	"fmt"
@@ -13,41 +14,44 @@ import (
 )
 
 type MemberService struct {
-
+}
+//用户手机号+验证码登录
+func (ms *MemberService) SmsLogin(loginparam param.SmsLoginParam) *model.Member {
+	//todo
+	return nil
 }
 
-func (ms *MemberService)SendCode(phone string) bool {
+func (ms *MemberService) SendCode(phone string) bool {
 
 	//1.产生一个验证码
-	code:=fmt.Sprintf("%06v",rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
+	code := fmt.Sprintf("%06v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
 	//2.调用阿里云SDK 完成发送
-	config:= tool.GetConfig().Sms
-	client, err := dysmsapi.NewClientWithAccessKey(config.RegionId,config.AppKey,config.AppSecret)
-	if err !=nil{
+	config := tool.GetConfig().Sms
+	client, err := dysmsapi.NewClientWithAccessKey(config.RegionId, config.AppKey, config.AppSecret)
+	if err != nil {
 		logger.Error(err.Error())
 		return false
 	}
 	request := dysmsapi.CreateSendSmsRequest()
 	request.Scheme = "https"
-	request.SignName=config.SignName
-	request.TemplateCode=config.TemplateCode
-	request.PhoneNumbers=phone
-	par,err:=json.Marshal(map[string]interface{}{
-		"code":code,
+	request.SignName = config.SignName
+	request.TemplateCode = config.TemplateCode
+	request.PhoneNumbers = phone
+	par, err := json.Marshal(map[string]interface{}{
+		"code": code,
 	})
-	request.TemplateParam=string(par)
+	request.TemplateParam = string(par)
 
-	response,err:=client.SendSms(request)
+	response, err := client.SendSms(request)
 	fmt.Println(response)
-	if err !=nil{
+	if err != nil {
 		logger.Error(err.Error())
 		return false
 	}
 
-
 	//3.接收返回结果，并判断发送状态
 	//短信验证码成功
-	if response.Code=="OK" {
+	if response.Code == "OK" {
 
 		//将验证码保存到数据库
 		smsCode := model.SmsCode{Phone: phone, Code: code, BizId: response.BizId, CreateTime: time.Now().Unix()}
