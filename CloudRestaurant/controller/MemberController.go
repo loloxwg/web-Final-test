@@ -12,7 +12,7 @@ type MemberController struct {
 
 func (mc *MemberController) Router(engine *gin.Engine) {
 	engine.GET("/api/sendcode", mc.sendSmsCode)
-	engine.OPTIONS("/api/login_sms",mc.smslogin)
+	engine.POST("/api/login_sms",mc.smslogin)
 }
 
 // http://localhost:8090/api/sendcode?phone=15922758321
