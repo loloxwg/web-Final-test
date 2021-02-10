@@ -4,10 +4,10 @@
   "app_host": "localhost",
   "app_port": "8090",
   "sms": {
-    "sign_name":"线上餐厅",
-    "template": "SMS_211021073",
-    "app_key": "xxx",
-    "app_secret": "xxx",
+    "sign_name":"智博教育",
+    "template_code": "SMS_211021073",
+    "app_key": "LTAI4G3Xmg55oHVAPWbkRHU1",
+    "app_secret": "ZUOu4gNTWind88sZuxVmvAFz3Vi7sZ",
     "region_id": "cn-hangzhou"
   },
   "database": {
