@@ -17,17 +17,23 @@ func main() {
 		panic(err.Error())
 	}
 
+	//实例化数据库
 	_, err = tool.OrmEngine(cfg)
 	if err != nil {
 		logger.Error(err.Error())
 		return
 	}
-	app := gin.Default()
 
+	//初始化redis配置
+	tool.InitRedisStore()
+
+	app := gin.Default()
 
 	//设置全局跨域访问
 	app.Use(Cors())
+
 	registerRouter(app)
+
 	app.Run(cfg.AppHost + ":" + cfg.AppPort)
 }
 
