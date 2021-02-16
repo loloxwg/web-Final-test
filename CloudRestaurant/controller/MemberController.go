@@ -1,5 +1,5 @@
 package controller
-
+//控制层
 //接口
 import (
 	"CloudRestaurant/param"
@@ -16,9 +16,35 @@ func (mc *MemberController) Router(engine *gin.Engine) {
 	engine.GET("/api/sendcode", mc.sendSmsCode)
 	engine.POST("/api/login_sms", mc.smslogin)
 	engine.GET("/api/captcha", mc.captcha)
-
 	//postman测试用，实际中不用
 	engine.POST("/api/vertifycha", mc.vertifyCaptcha)
+	//login_pwd
+	engine.POST("/api/login_pwd", mc.nameLogin)
+}
+
+//用户名+密码、验证码登录
+func (mc *MemberController) nameLogin(context *gin.Context) {
+	//1.解析用户登录传递参数
+	var loginParam param.LoginParam
+	err := tool.Decode(context.Request.Body, &loginParam)
+	if err != nil {
+		tool.Failed(context, "参数解析失败")
+		return
+	}
+	//2.验证验证码
+	validate := tool.VertifyCaptcha(loginParam.Id, loginParam.Value)
+	if !validate {
+		tool.Failed(context, "验证码不正确，请重新验证")
+		return
+	}
+	//3.登录
+	ms := service.MemberService{}
+	member := ms.Login(loginParam.Name, loginParam.Password)
+	if member.Id!=0{
+		tool.Success(context,&member)
+		return
+	}
+	tool.Failed(context,"登陆失败")
 }
 
 //生成验证码

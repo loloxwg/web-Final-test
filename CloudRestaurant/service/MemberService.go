@@ -1,5 +1,6 @@
 package service
 
+//功能实现层
 import (
 	"CloudRestaurant/dao"
 	"CloudRestaurant/model"
@@ -15,10 +16,29 @@ import (
 
 type MemberService struct {
 }
+//用户登录
+func (ms *MemberService) Login(name string, password string) *model.Member {
+	//1.使用用户名 +密码 查询用户信息 如果存在用户 直接返回
+	md := dao.MemberDao{tool.DbEngine}
+	member := md.Query(name, password)
+	if member.Id != 0 {
+		return member
+	}
+	//2.用户信息不存在，作为新用户保存到数据库中
+	user := model.Member{}
+	user.UserName = name
+	user.Password = tool.EncoderSha256(password)
+	user.RegisterTime = time.Now().Unix()
 
-//用户手机号+验证码登录
+	result:=md.InsertMember(user)
+	user.Id=result
+
+	return &user
+}
+
+//用户手机号+验证码de登录
 func (ms *MemberService) SmsLogin(loginparam param.SmsLoginParam) *model.Member {
-	//todo
+
 	//1.获取到手机号和验证码
 
 	//2.验证手机号+验证码是否正确
@@ -33,12 +53,12 @@ func (ms *MemberService) SmsLogin(loginparam param.SmsLoginParam) *model.Member 
 		return member
 	}
 	//4.创建一个member记录，并保存
-	user:=model.Member{}
-	user.UserName=loginparam.Phone
-	user.Mobile=loginparam.Phone
-	user.RegisterTime=time.Now().Unix()
+	user := model.Member{}
+	user.UserName = loginparam.Phone
+	user.Mobile = loginparam.Phone
+	user.RegisterTime = time.Now().Unix()
 
-	user.Id=md.InsertMember(user)
+	user.Id = md.InsertMember(user)
 	return &user
 
 }
