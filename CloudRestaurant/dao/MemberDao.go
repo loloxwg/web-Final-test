@@ -11,6 +11,16 @@ import (
 type MemberDao struct {
 	*tool.Orm
 }
+//更新member记录，头像属性
+func (md *MemberDao) UpdateMemberAvatar(userId int64, fileName string) int64 {
+	member := model.Member{Avatar: fileName}
+	result, err := md.Where(" id = ? ", userId).Update(&member)
+	if err != nil {
+		fmt.Println(err.Error())
+		return 0
+	}
+	return result
+}
 
 //根据用户名和密码查询
 func (md *MemberDao) Query(name string, password string) *model.Member {
@@ -18,8 +28,8 @@ func (md *MemberDao) Query(name string, password string) *model.Member {
 
 	password = tool.EncoderSha256(password)
 
-	_, err := md.Where("user_name = ? and password =?", name, password).Get(&member)
-	if err!=nil {
+	_, err := md.Where("user_name = ? and password = ?", name, password).Get(&member)
+	if err != nil {
 		logger.Error(err.Error())
 		return nil
 	}
