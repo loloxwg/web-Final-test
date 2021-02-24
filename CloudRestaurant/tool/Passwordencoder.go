@@ -1,5 +1,5 @@
 package tool
-
+//密码加密
 import (
 	"crypto/md5"
 	"crypto/sha256"

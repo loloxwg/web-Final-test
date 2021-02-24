@@ -1,5 +1,5 @@
 package tool
-
+//封装好的result
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"

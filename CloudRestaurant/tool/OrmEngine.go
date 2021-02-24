@@ -1,5 +1,5 @@
 package tool
-
+//xorms数据库框架
 import (
 	"CloudRestaurant/model"
 	_"github.com/go-sql-driver/mysql"

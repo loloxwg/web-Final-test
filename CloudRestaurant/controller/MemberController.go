@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"os"
 	"strconv"
 	"time"
 )
@@ -42,12 +43,13 @@ func (mc *MemberController) uploadAvator(context *gin.Context) {
 	}
 
 	//2、判断user_id对应的用户是否已经登录
+	var member model.Member
 	sess := tool.GetSess(context, "user_"+userId)
 	if sess == nil {
 		tool.Failed(context, "参数不合法")
 		return
 	}
-	var member model.Member
+
 	json.Unmarshal(sess.([]byte), &member)
 
 	//3、file保存到本地
@@ -57,15 +59,23 @@ func (mc *MemberController) uploadAvator(context *gin.Context) {
 		tool.Failed(context, "头像更新失败")
 		return
 	}
+	//3.1将文件上传到fastDFS系统
+	fileId := tool.UploadFile(fileName)
+	if fileId !="" {
+		//删除本地uploadfile下的文件
+		os.Remove(fileName)
 
-	// http://localhost:8080/static/.../davie.png
-	//4、将保存后的文件本地路径 保存到用户表中的头像字段
-	memberService := service.MemberService{}
-	path := memberService.UploadAvatar(member.Id, fileName[1:])
-	if path != "" {
-		tool.Success(context, "http://localhost:8090"+path)
-		return
+		// http://localhost:8080/static/.../davie.png
+		//4、将保存后的文件本地路径 保存到用户表中的头像字段
+		memberService := service.MemberService{}
+		path := memberService.UploadAvatar(member.Id, fileId)
+		if path != "" {
+			//tool.Success(context, "http://localhost:8090"+path)
+			tool.Success(context, tool.FileServerAddr()+"/"+path)
+			return
+		}
 	}
+
 	//5、返回结果
 	tool.Failed(context, "上传失败")
 }

@@ -1,5 +1,5 @@
 package tool
-
+//redis
 import (
 	"github.com/go-redis/redis"
 	"github.com/mojocn/base64Captcha"

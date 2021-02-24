@@ -20,6 +20,7 @@ require (
 	github.com/mojocn/base64Captcha v1.2.2
 	github.com/onsi/ginkgo v1.15.0 // indirect
 	github.com/onsi/gomega v1.10.5 // indirect
+	github.com/tedcy/fdfs_client v0.0.0-20200106031142-21a04994525a
 	github.com/ugorji/go v1.2.3 // indirect
 	github.com/wonderivan/logger v1.0.0
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
