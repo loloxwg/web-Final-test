@@ -44,7 +44,7 @@ func registerRouter(router *gin.Engine) {
 	new(controller.HelloController).Router(router)
 	new(controller.MemberController).Router(router)
 }
-
+//跨域
 func Cors() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		method := context.Request.Method

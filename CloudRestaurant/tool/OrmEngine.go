@@ -22,7 +22,8 @@ func OrmEngine(cfg *Config) (*Orm, error) {
 	engine.ShowSQL(database.ShowSql)
 
 	err = engine.Sync2(new(model.SmsCode),
-		new(model.Member))
+		new(model.Member),
+		new(model.MessageCategory))
 
 	if err != nil {
 		return nil, err
